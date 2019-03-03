@@ -16,7 +16,7 @@ public class App {
         String url = "http://0.0.0.0:8080";
 
         log.info("Creating configs");
-        ClassNamesResourceConfig config = new ClassNamesResourceConfig(AstartesService.class, InternalExceptionMapper.class, IdNotFoundExceptionMapper.class);
+        ClassNamesResourceConfig config = new ClassNamesResourceConfig(AstartesService.class, InternalExceptionMapper.class, IdNotFoundExceptionMapper.class, ThrottlingExceptionMapper.class);
         log.info("Creating server");
         HttpServer server = GrizzlyServerFactory.createHttpServer(url, config);
         log.info("Starting server");

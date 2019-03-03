@@ -1,5 +1,6 @@
 package ru.ifmo.web.service;
 
+import com.sun.jersey.spi.container.ResourceFilters;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.Data;
@@ -9,8 +10,8 @@ import ru.ifmo.web.database.entity.Astartes;
 import ru.ifmo.web.service.exceptions.IdNotFoundException;
 import ru.ifmo.web.service.exceptions.InternalException;
 import ru.ifmo.web.standalone.App;
+import ru.ifmo.web.standalone.ThrottlingFilter;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -32,6 +33,7 @@ import java.util.Properties;
 @Slf4j
 @Path("/astartes")
 @Produces({MediaType.APPLICATION_JSON})
+@ResourceFilters(ThrottlingFilter.class)
 public class AstartesService {
     private AstartesDAO astartesDAO;
 
@@ -54,6 +56,13 @@ public class AstartesService {
             String message = "Произошла Внутренняя ошибка сервера: SQL exception: " + e.getMessage() + ". State: " + e.getSQLState();
             throw new InternalException(message);
         }
+    }
+
+    @GET
+    @Path("/freeze")
+    public String freeze(@QueryParam("time") Long time) throws InternalException, InterruptedException {
+        Thread.sleep(time);
+        return "Ok";
     }
 
     @GET
